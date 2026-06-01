@@ -1,0 +1,27 @@
+{% extends "main/base.html" %}
+
+{% block header %}
+<h1>{{ title }}</h1>
+{% endblock %}
+
+{% block content %}
+{% if shelves %}
+<div class="shelves-grid">
+  {% for shelf in shelves %}
+  <div class="shelf-container">
+    <div class="shelf-body">
+      <a href="#" class="shelf-title">{{ shelf.name }}</a>
+    </div>
+    <div class="shelf-footer">
+      <button class="button edit-button">Edit</button>
+      <button class="button delete-button">Delete</button>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="empty">
+  <p>There are no shelves yet</p>
+</div>
+{% endif %}
+{% endblock %}
