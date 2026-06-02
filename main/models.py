@@ -13,7 +13,12 @@ class Shelf(models.Model):
 
 class Product(models.Model):
     name = models.CharField(max_length=255)
-    shelf = models.ForeignKey(Shelf, on_delete=models.CASCADE)
+    shelf = models.ForeignKey(
+        Shelf,
+        on_delete=models.CASCADE,
+        related_name='products',
+        null=True, blank=True,
+    )
     category = models.CharField(max_length=255)
     quantity = models.DecimalField(max_digits=5, decimal_places=2, default=0)
 

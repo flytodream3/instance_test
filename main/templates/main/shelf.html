@@ -1,0 +1,22 @@
+{% extends 'main/base.html' %}
+
+{% block header %}
+<h1>{{ title }}</h1>
+<a href="{% url 'main:add_to_shelf' shelf.id %}" class="button edit-button">
+  Add Products
+</a>
+{% endblock %}
+
+{% block content %}
+{% if products %}
+<ul>
+  {% for product in products %}
+  	<li>{{ product.name }} - {{ product.quantity }}</li>
+  {% endfor %}
+</ul>
+{% else %}
+<div>
+  <p>No products in this shelf.</p>
+</div>
+{% endif %}
+{% endblock %}

@@ -10,7 +10,7 @@
   {% for shelf in shelves %}
   <div class="shelf-container">
     <div class="shelf-body">
-      <a href="#" class="shelf-title">{{ shelf.name }}</a>
+      <a href="{% url 'main:shelf' shelf.id %}" class="shelf-title">{{ shelf.name }}</a>
     </div>
     <div class="shelf-footer">
       <button class="button edit-button">Edit</button>

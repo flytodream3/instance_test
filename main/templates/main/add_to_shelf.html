@@ -1,0 +1,103 @@
+{% extends 'main/base.html' %}
+
+{% block header %}
+	<h1>{{ title }}</h1>
+{% endblock %}
+
+{% block content %}
+	<div>
+    <form method="post">
+      {% csrf_token %}
+      {{ formset.management_form }}
+
+      <table>
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th>Delete</th>
+          </tr>
+        </thead>
+        <tbody id="formset-body">
+          {% for form in formset %}
+          	<tr>
+              <td>
+                <input
+                  type="text"
+                  name="{{ form.product_name.html_name }}"
+                  list="products-list"
+                  class="products-autocomplete"
+                  autocomplete="off"
+                >
+                {{ form.product_id }}
+              </td>
+              <td>{{ form.DELETE }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+      <datalist id="products-list">
+        {% for product in products %}
+        	<option value="{{ product.name }}" data-id="{{ product.id }}">
+        {% endfor %}
+
+      </datalist>
+
+      <button type="button" id="add-more">Add form</button>
+      <button type="submit">Save</button>
+    </form>
+  </div>
+
+  <script>
+
+    document.addEventListener('DOMContentLoaded', function () {
+      const dataListOptions = document.querySelectorAll('#products-list option');
+      const formsetBody = document.getElementById('formset-body');
+
+      function attachProductNameHandler(input) {
+        input.addEventListener('input', function (e) {
+          const selectedName = this.value;
+          const hiddenId = this.parentNode.querySelector('input[type=hidden]');
+
+          let foundId = null;
+
+          for (let opt of dataListOptions) {
+            if (opt.value === selectedName) {
+              foundId = opt.getAttribute('data-id');
+              break;
+            }
+          }
+          if (hiddenId) hiddenId.value = foundId || '';
+        })
+      }
+
+      document.querySelectorAll('.products-autocomplete').forEach(attachProductNameHandler);
+
+      const totalForms = document.getElementById('id_form-TOTAL_FORMS');
+      const addButton = document.getElementById('add-more');
+
+      addButton.addEventListener('click', function () {
+        const current = parseInt(totalForms.value);
+        const newRow = formsetBody.children[0].cloneNode(true);
+        const regex = /form-(\d+)-/g;
+
+        newRow.innerHTML = newRow.innerHTML.replace(regex, `form-${current}-`);
+        newRow.querySelectorAll('select, input').forEach(el => {
+          if (el.name) el.name = el.name.replace(regex, `form-${current}-`);
+          if (el.id) el.id = el.id.replace(regex, `form-${current}-`);
+          if (el.type === 'checkbox') el.checked = false;
+          if (el.classList && el.classList.contains('products-autocomplete')) {
+            el.value = '';
+            attachProductNameHandler(el);
+          }
+          if (el.type === 'hidden') el.value = '';
+        });
+        formsetBody.appendChild(newRow);
+        totalForms.value = current + 1;
+      })
+
+    })
+
+  </script>
+
+{% endblock %}
